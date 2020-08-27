@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="carriers" translate="label" type="text" sortOrder="320" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="magestiopickupstore" translate="label" type="text" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Magestio Pickup Store</label>
+                <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="name" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Method Name</label>
+                </field>
+                <field id="methods" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Methods</label>
+                    <frontend_model>Magestio\PickupStore\Block\Adminhtml\System\Config\Form\Field\Methods</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+                <field id="sort_order" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Sort Order</label>
+                </field>
+                <field id="sallowspecific" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Ship to Applicable Countries</label>
+                    <frontend_class>shipping-applicable-country</frontend_class>
+                    <source_model>Magento\Shipping\Model\Config\Source\Allspecificcountries</source_model>
+                </field>
+                <field id="specificcountry" translate="label" type="multiselect" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Ship to Specific Countries</label>
+                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                    <can_be_empty>1</can_be_empty>
+                </field>
+                <field id="showmethod" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Show Method if Not Applicable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <frontend_class>shipping-skip-hide</frontend_class>
+                </field>
+                <field id="specificerrmsg" translate="label" type="textarea" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Displayed Error Message</label>
+                </field>
+                <field id="negate" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>¿Exclude postal codes listed below?</label>
+                    <source_model>Magestio\PostCodeShipping\Model\Config\Source\Exclusion</source_model>
+                    <comment>(If EXCLUDE, all post codes can use Cash on delivery except those that are on the list; If INCLUDED, only those postal codes that fit in the condition can use Cash On Delivery )</comment>
+                </field>
+                <field id="specificpostcode" translate="label" type="textarea" sortOrder="91" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>List of Post Codes that can (o can't) use Cash on Delivery Payment</label>
+                    <comment><![CDATA[
+                    <ul>
+                    <li>Separate with ";" codes range. Ex: <b>01234;0255;0366;03700-03760;035**</b></li>
+                    <li>Use ranges as the example <b>03700-03760</b></li>
+                    <li>Use wildcard * to apply certain range. Ex: <b>012**</b> will apply <i>01234</i> and <i>01299</i> but not <i>01300</i></li>
+                    <li>Use * to apply all Post Codes and not filter</li>
+                    </ul>
+                    ]]></comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
