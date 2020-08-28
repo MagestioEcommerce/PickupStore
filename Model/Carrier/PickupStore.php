@@ -88,15 +88,66 @@ class PickupStore extends AbstractCarrier implements CarrierInterface
         if (!$this->getConfigFlag('active')) {
             return false;
         }
-        $postCodeConfig = $this->getConfigData(self::POST_CODE_CONFIG);
-        $negate = $this->getConfigData(self::NEGATE_CONFIG);
 
         $shippingPostCode = $this->_session->getQuote()->getShippingAddress()->getPostcode();
 
+
+        $methods = $this->jsonSerializer->unserialize($this->getConfigData('methods'));
+        $name = $this->getConfigData('name') !== null ? $this->getConfigData('name') : __("Store pickup");
+
+        /** @var \Magento\Shipping\Model\Rate\Result $result */
+        $result = $this->_rateResultFactory->create();
+
+        foreach ($methods as $method) {
+
+            $negate = $method[self::NEGATE_CONFIG];
+            $postCodeConfig = $method[self::POST_CODE_CONFIG];
+
+            if(!$this->isAvailable($shippingPostCode,$negate, $postCodeConfig))
+                continue;
+
+
+            $rateMethod = $this->_rateMethodFactory->create();
+
+            $rateMethod->setCarrier(self::CARRIER_CODE);
+            $rateMethod->setCarrierTitle($name);
+
+            $rateMethod->setMethod($method['store_code']);
+            $rateMethod->setMethodTitle($method['store_name']);
+
+            $rateMethod->setPrice($method['store_price']);
+            $rateMethod->setCost($method['store_price']);
+
+            $result->append($rateMethod);
+
+        }
+
+        return $result;
+    }
+
+    /**
+     * get allowed methods
+     * @return array
+     */
+    public function getAllowedMethods()
+    {
+        return [$this->_code => $this->getConfigData('name')];
+    }
+
+    /**
+     * @param $shippingPostCode
+     * @param $negate
+     * @param $postCodeConfig
+     * @return bool
+     */
+    protected function isAvailable($shippingPostCode,$negate,$postCodeConfig)
+    {
+
         $val_true = true;
         $val_false = false;
+        $return = false;
         if( !isset($shippingPostCode) || $shippingPostCode === "")
-            return false;
+            $return = false;
 
         if(isset($postCodeConfig)){
             $available = $val_false;
@@ -136,42 +187,8 @@ class PickupStore extends AbstractCarrier implements CarrierInterface
                 }
             }
 
-            if($available == false)
-                return false;
+            $return = $available;
         }
-
-        $methods = $this->jsonSerializer->unserialize($this->getConfigData('methods'));
-        $name = $this->getConfigData('name') !== null ? $this->getConfigData('name') : __("Store pickup");
-
-        /** @var \Magento\Shipping\Model\Rate\Result $result */
-        $result = $this->_rateResultFactory->create();
-
-        foreach ($methods as $method) {
-
-            $rateMethod = $this->_rateMethodFactory->create();
-
-            $rateMethod->setCarrier(self::CARRIER_CODE);
-            $rateMethod->setCarrierTitle($name);
-
-            $rateMethod->setMethod($method['store_code']);
-            $rateMethod->setMethodTitle($method['store_name']);
-
-            $rateMethod->setPrice($method['store_price']);
-            $rateMethod->setCost($method['store_price']);
-
-            $result->append($rateMethod);
-
-        }
-
-        return $result;
-    }
-
-    /**
-     * get allowed methods
-     * @return array
-     */
-    public function getAllowedMethods()
-    {
-        return [$this->_code => $this->getConfigData('name')];
+        return $return;
     }
 }

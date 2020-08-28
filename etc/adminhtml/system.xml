@@ -37,13 +37,7 @@
                 <field id="specificerrmsg" translate="label" type="textarea" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Displayed Error Message</label>
                 </field>
-                <field id="negate" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>¿Exclude postal codes listed below?</label>
-                    <source_model>Magestio\PostCodeShipping\Model\Config\Source\Exclusion</source_model>
-                    <comment>(If EXCLUDE, all post codes can use Cash on delivery except those that are on the list; If INCLUDED, only those postal codes that fit in the condition can use Cash On Delivery )</comment>
-                </field>
-                <field id="specificpostcode" translate="label" type="textarea" sortOrder="91" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>List of Post Codes that can (o can't) use Cash on Delivery Payment</label>
+                <field id="label" translate="label" type="label" sortOrder="91" showInDefault="1" showInWebsite="1" showInStore="1">
                     <comment><![CDATA[
                     <ul>
                     <li>Separate with ";" codes range. Ex: <b>01234;0255;0366;03700-03760;035**</b></li>
